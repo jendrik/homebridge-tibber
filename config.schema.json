@@ -1,0 +1,55 @@
+{
+  "pluginAlias": "tibber",
+  "pluginType": "platform",
+  "singular": true,
+  "schema": {
+    "apiKey": {
+      "title": "API Key",
+      "type": "string",
+      "placeholder": "5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE",
+      "description": "Tibber API Key"
+    },
+    "homes": {
+      "type": "array",
+      "items": {
+        "title": "Homes",
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string",
+            "required": true,
+            "placeholder": "Display Name for Home"
+          },
+          "id": {
+            "title": "Home ID",
+            "type": "string",
+            "placeholder": "96a14971-525a-4420-aae9-e5aedaa129ff",
+            "description": "Tibber Home ID"
+          }
+        }
+      }
+    }
+  },
+  "layout": [
+    {
+      "key": "homes",
+      "type": "array",
+      "orderable": false,
+      "buttonText": "Add Home",
+      "items": [
+        "homes[].name",
+        "homes[].id"
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Global",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        "apiKey"
+      ]
+    }
+  ]
+}
