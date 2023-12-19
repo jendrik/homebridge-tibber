@@ -1,2 +1,2 @@
-# homebridge-knx-light
-Homebridge Plugin for KNX Lights
+# homebridge-tibber
+Homebridge Plugin for Tibber
