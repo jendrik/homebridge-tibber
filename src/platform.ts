@@ -25,8 +25,8 @@ export class TibberPlatform implements StaticPlatformPlugin {
     this.tibberConfig = {
       active: true,
       apiEndpoint: {
-          apiKey: config.apiKey,
-          queryUrl: 'https://api.tibber.com/v1-beta/gql',
+        apiKey: config.apiKey,
+        queryUrl: 'https://api.tibber.com/v1-beta/gql',
       },
     };
 

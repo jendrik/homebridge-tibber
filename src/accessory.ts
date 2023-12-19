@@ -68,11 +68,26 @@ export class TibberAccessory implements AccessoryPlugin {
   async updateCurrentEnergyPrice() {
     const result = await this.tibberQuery.getCurrentEnergyPrice(this.config.homeID);
     this.platform.log.info(`Energy Level: ${result.level}`);
-    
-    this.veryCheapService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(result.level == PriceLevel.VERY_CHEAP ? this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED : this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
-    this.cheapService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(result.level == PriceLevel.CHEAP ? this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED : this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
-    this.normalService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(result.level == PriceLevel.NORMAL ? this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED : this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
-    this.expensiveService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(result.level == PriceLevel.EXPENSIVE ? this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED : this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
-    this.veryExpensiveService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(result.level == PriceLevel.VERY_EXPENSIVE ? this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED : this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
+
+    this.veryCheapService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
+      result.level === PriceLevel.VERY_CHEAP ?
+        this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED :
+        this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
+    this.cheapService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
+      result.level === PriceLevel.CHEAP ?
+        this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED :
+        this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
+    this.normalService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
+      result.level === PriceLevel.NORMAL ?
+        this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED :
+        this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
+    this.expensiveService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
+      result.level === PriceLevel.EXPENSIVE
+        ? this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED
+        : this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
+    this.veryExpensiveService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
+      result.level === PriceLevel.VERY_EXPENSIVE
+        ? this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED
+        : this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
   }
 }
