@@ -58,7 +58,7 @@ export class TibberAccessory implements AccessoryPlugin {
   async updateCurrentEnergyPrice() {
     let level: PriceLevel;
     try {
-      const result = await this.tibberQuery.getCurrentEnergyPrice(this.config.homeID);
+      const result = await this.tibberQuery.getCurrentEnergyPrice(this.homeID);
       level = result.level;
       this.platform.log.info(`Energy Level: ${result.level}`);
     } catch (error) {
