@@ -42,15 +42,15 @@ export class TibberAccessory implements AccessoryPlugin {
       .setCharacteristic(platform.Characteristic.SerialNumber, this.displayName)
       .setCharacteristic(platform.Characteristic.FirmwareRevision, PLUGIN_VERSION);
 
-    this.veryCheapService = new platform.Service.ContactSensor(this.name + ' @ Very Cheap  Energy');
-    this.cheapService = new platform.Service.ContactSensor(this.name + ' @ Cheap  Energy');
-    this.normalService = new platform.Service.ContactSensor(this.name + ' @ Normal  Energy');
-    this.expensiveService = new platform.Service.ContactSensor(this.name + ' @ Expensive Energy');
-    this.veryExpensiveService = new platform.Service.ContactSensor(this.name + ' @ Very Expensive Energy');
+    this.veryCheapService = new platform.Service.ContactSensor(this.name + ' - Very Cheap  Energy', PriceLevel.VERY_CHEAP);
+    this.cheapService = new platform.Service.ContactSensor(this.name + ' - Cheap  Energy', PriceLevel.CHEAP);
+    this.normalService = new platform.Service.ContactSensor(this.name + ' - Normal  Energy', PriceLevel.NORMAL);
+    this.expensiveService = new platform.Service.ContactSensor(this.name + ' - Expensive Energy', PriceLevel.EXPENSIVE);
+    this.veryExpensiveService = new platform.Service.ContactSensor(this.name + ' - Very Expensive Energy', PriceLevel.VERY_EXPENSIVE);
 
     // update price every minute
     setInterval(async () => {
-      this.updateCurrentEnergyPrice();
+      await this.updateCurrentEnergyPrice();
     }, 60 * 1000);
   }
 
@@ -66,27 +66,35 @@ export class TibberAccessory implements AccessoryPlugin {
   }
 
   async updateCurrentEnergyPrice() {
-    const result = await this.tibberQuery.getCurrentEnergyPrice(this.config.homeID);
-    this.platform.log.info(`Energy Level: ${result.level}`);
+    let level: PriceLevel;
+    try {
+      const result = await this.tibberQuery.getCurrentEnergyPrice(this.config.homeID);
+      level = result.level;
+      this.platform.log.info(`Energy Level: ${result.level}`);
+    } catch (error) {
+      level = PriceLevel.NORMAL;
+      this.platform.log.error(`Error: ${JSON.stringify(error)}`);
+      this.platform.log.warn('Resetting Energy Level Price to Normal');
+    }
 
     this.veryCheapService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
-      result.level === PriceLevel.VERY_CHEAP ?
+      level === PriceLevel.VERY_CHEAP ?
         this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED :
         this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
     this.cheapService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
-      result.level === PriceLevel.CHEAP ?
+      level === PriceLevel.CHEAP ?
         this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED :
         this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
     this.normalService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
-      result.level === PriceLevel.NORMAL ?
+      level === PriceLevel.NORMAL ?
         this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED :
         this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
     this.expensiveService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
-      result.level === PriceLevel.EXPENSIVE
+      level === PriceLevel.EXPENSIVE
         ? this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED
         : this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
     this.veryExpensiveService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
-      result.level === PriceLevel.VERY_EXPENSIVE
+      level === PriceLevel.VERY_EXPENSIVE
         ? this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED
         : this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
   }
