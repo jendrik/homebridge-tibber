@@ -11,15 +11,12 @@ export class TibberAccessory implements AccessoryPlugin {
   private readonly uuid_base: string;
   private readonly name: string;
   private readonly homeID: string;
+  private readonly level: PriceLevel;
   private readonly displayName: string;
 
   private readonly tibberQuery: TibberQuery;
 
-  private readonly veryCheapService: Service;
-  private readonly cheapService: Service;
-  private readonly normalService: Service;
-  private readonly expensiveService: Service;
-  private readonly veryExpensiveService: Service;
+  private readonly contactSensorService: Service;
 
   private readonly informationService: Service;
 
@@ -29,6 +26,7 @@ export class TibberAccessory implements AccessoryPlugin {
   ) {
     this.name = config.name;
     this.homeID = config.id;
+    this.level = config.level;
     this.uuid_base = platform.uuid.generate(PLUGIN_NAME + '-' + this.name + '-' + this.homeID);
     this.displayName = this.uuid_base;
 
@@ -42,11 +40,7 @@ export class TibberAccessory implements AccessoryPlugin {
       .setCharacteristic(platform.Characteristic.SerialNumber, this.displayName)
       .setCharacteristic(platform.Characteristic.FirmwareRevision, PLUGIN_VERSION);
 
-    this.veryCheapService = new platform.Service.ContactSensor(this.name + ' - Very Cheap  Energy', PriceLevel.VERY_CHEAP);
-    this.cheapService = new platform.Service.ContactSensor(this.name + ' - Cheap  Energy', PriceLevel.CHEAP);
-    this.normalService = new platform.Service.ContactSensor(this.name + ' - Normal  Energy', PriceLevel.NORMAL);
-    this.expensiveService = new platform.Service.ContactSensor(this.name + ' - Expensive Energy', PriceLevel.EXPENSIVE);
-    this.veryExpensiveService = new platform.Service.ContactSensor(this.name + ' - Very Expensive Energy', PriceLevel.VERY_EXPENSIVE);
+    this.contactSensorService = new platform.Service.ContactSensor(this.name);
 
     // update price every minute
     setInterval(async () => {
@@ -57,11 +51,7 @@ export class TibberAccessory implements AccessoryPlugin {
   getServices(): Service[] {
     return [
       this.informationService,
-      this.veryCheapService,
-      this.cheapService,
-      this.normalService,
-      this.expensiveService,
-      this.veryExpensiveService,
+      this.contactSensorService,
     ];
   }
 
@@ -77,25 +67,9 @@ export class TibberAccessory implements AccessoryPlugin {
       this.platform.log.warn('Resetting Energy Level Price to Normal');
     }
 
-    this.veryCheapService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
-      level === PriceLevel.VERY_CHEAP ?
+    this.contactSensorService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
+      level === this.level ?
         this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED :
         this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
-    this.cheapService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
-      level === PriceLevel.CHEAP ?
-        this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED :
-        this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
-    this.normalService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
-      level === PriceLevel.NORMAL ?
-        this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED :
-        this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
-    this.expensiveService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
-      level === PriceLevel.EXPENSIVE
-        ? this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED
-        : this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
-    this.veryExpensiveService.getCharacteristic(this.platform.Characteristic.ContactSensorState).updateValue(
-      level === PriceLevel.VERY_EXPENSIVE
-        ? this.platform.Characteristic.ContactSensorState.CONTACT_DETECTED
-        : this.platform.Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
   }
 }

@@ -30,8 +30,8 @@ export class TibberPlatform implements StaticPlatformPlugin {
       },
     };
 
-    // read homes
-    config.homes.forEach(element => {
+    // read devices
+    config.devices.forEach(element => {
       if (element.name !== undefined && element.id !== undefined) {
         this.devices.push(new TibberAccessory(this, element));
       }

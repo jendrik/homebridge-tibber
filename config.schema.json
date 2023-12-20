@@ -9,10 +9,10 @@
       "placeholder": "5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE",
       "description": "Tibber API Key"
     },
-    "homes": {
+    "devices": {
       "type": "array",
       "items": {
-        "title": "Homes",
+        "title": "Sensors",
         "type": "object",
         "properties": {
           "name": {
@@ -26,6 +26,45 @@
             "type": "string",
             "placeholder": "96a14971-525a-4420-aae9-e5aedaa129ff",
             "description": "Tibber Home ID"
+          },
+          "level": {
+            "title": "Price Level",
+            "type": "string",
+            "description": "Tibber Price Level",
+            "required": true,
+            "default": "NORMAL",
+            "oneOf": [
+              {
+                "title": "Very Cheap",
+                "enum": [
+                  "VERY_CHEAP"
+                ]
+              },
+              {
+                "title": "Cheap",
+                "enum": [
+                  "CHEAP"
+                ]
+              },
+              {
+                "title": "Normal",
+                "enum": [
+                  "NORMAL"
+                ]
+              },
+              {
+                "title": "Expensive",
+                "enum": [
+                  "EXPENSIVE"
+                ]
+              },
+              {
+                "title": "Very Expensive",
+                "enum": [
+                  "VERY_EXPENSIVE"
+                ]
+              }
+            ]
           }
         }
       }
@@ -33,13 +72,14 @@
   },
   "layout": [
     {
-      "key": "homes",
+      "key": "devices",
       "type": "array",
       "orderable": false,
-      "buttonText": "Add Home",
+      "buttonText": "Add Sensor",
       "items": [
-        "homes[].name",
-        "homes[].id"
+        "devices[].name",
+        "devices[].id",
+        "devices[].level"
       ]
     },
     {
