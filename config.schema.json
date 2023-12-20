@@ -19,7 +19,7 @@
             "title": "Name",
             "type": "string",
             "required": true,
-            "placeholder": "Display Name for Home"
+            "placeholder": "Display Name for Sensor"
           },
           "id": {
             "title": "Home ID",
