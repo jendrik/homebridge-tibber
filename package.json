@@ -41,6 +41,6 @@
   },
   "dependencies": {
     "homebridge-lib": "^7.1.0",
-    "tibber-api": "^5.1.0"
+    "tibber-api": "^5.3.0"
   }
 }
