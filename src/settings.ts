@@ -1,4 +1,4 @@
-/* eslint @typescript-eslint/no-var-requires: "off" */
+/* eslint @typescript-eslint/no-require-imports: "off" */
 const { displayName, version } = require('../package.json');
 
 /**

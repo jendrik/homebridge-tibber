@@ -1,6 +1,7 @@
 {
   "displayName": "Tibber",
   "name": "@jendrik/homebridge-tibber",
+  "type": "module",
   "version": "0.1.5",
   "description": "Homebridge plugin for Tibber",
   "license": "Apache-2.0",

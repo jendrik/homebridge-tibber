@@ -9,8 +9,6 @@ export class TibberPlatform implements StaticPlatformPlugin {
   public readonly Characteristic: typeof Characteristic;
   public readonly uuid: typeof uuid;
 
-  public readonly fakeGatoHistoryService: any;
-
   public readonly tibberConfig: IConfig;
 
   private readonly devices: TibberAccessory[] = [];
