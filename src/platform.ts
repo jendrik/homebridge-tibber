@@ -1,16 +1,15 @@
-import { API, StaticPlatformPlugin, Logger, PlatformConfig, AccessoryPlugin, Service, Characteristic, uuid } from 'homebridge';
+import { API, StaticPlatformPlugin, Logger, PlatformConfig, AccessoryPlugin, Service, Characteristic, uuid, AccessoryConfig } from 'homebridge';
 
 import { IConfig } from 'tibber-api';
 
 import { TibberAccessory } from './accessory';
 
-
 export class TibberPlatform implements StaticPlatformPlugin {
-  public readonly Service: typeof Service = this.api.hap.Service;
-  public readonly Characteristic: typeof Characteristic = this.api.hap.Characteristic;
-  public readonly uuid: typeof uuid = this.api.hap.uuid;
+  public readonly Service: typeof Service;
+  public readonly Characteristic: typeof Characteristic;
+  public readonly uuid: typeof uuid;
 
-  public readonly fakeGatoHistoryService;
+  public readonly fakeGatoHistoryService: any;
 
   public readonly tibberConfig: IConfig;
 
@@ -21,6 +20,10 @@ export class TibberPlatform implements StaticPlatformPlugin {
     public readonly config: PlatformConfig,
     public readonly api: API,
   ) {
+    this.Service = api.hap.Service;
+    this.Characteristic = api.hap.Characteristic;
+    this.uuid = this.api.hap.uuid;
+
     // Config object needed when instantiating TibberQuery
     this.tibberConfig = {
       active: true,
@@ -31,7 +34,7 @@ export class TibberPlatform implements StaticPlatformPlugin {
     };
 
     // read devices
-    config.devices.forEach(element => {
+    config.devices.forEach((element: AccessoryConfig) => {
       if (element.name !== undefined && element.id !== undefined) {
         this.devices.push(new TibberAccessory(this, element));
       }
