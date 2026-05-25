@@ -2,7 +2,7 @@ import { Service } from 'homebridge';
 import type { AccessoryPlugin } from 'homebridge';
 
 import { TibberQuery } from 'tibber-api';
-import { PriceLevel } from 'tibber-api/lib/src/models/enums/PriceLevel';
+import { PriceLevel } from 'tibber-api/lib/src/models/enums/PriceLevel.js';
 
 import type { TibberDeviceConfig } from './config.js';
 import { PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_DISPLAY_NAME } from './settings.js';

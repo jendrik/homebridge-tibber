@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { PriceLevel } from 'tibber-api/lib/src/models/enums/PriceLevel';
+import { PriceLevel } from 'tibber-api/lib/src/models/enums/PriceLevel.js';
 import type { PlatformConfig } from 'homebridge';
 
 import { resolveTibberPlatformConfig } from '../src/config.js';

@@ -18,7 +18,7 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "tibber-api/lib/src/models/enums/PriceLevel": [
+      "tibber-api/lib/src/models/enums/PriceLevel.js": [
         "node_modules/tibber-api/lib/src/models/enums/PriceLevel.d.ts"
       ]
     }

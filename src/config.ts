@@ -1,5 +1,5 @@
 import type { Logger, PlatformConfig } from 'homebridge';
-import { PriceLevel } from 'tibber-api/lib/src/models/enums/PriceLevel';
+import { PriceLevel } from 'tibber-api/lib/src/models/enums/PriceLevel.js';
 
 export interface TibberDeviceConfig {
   name: string;
