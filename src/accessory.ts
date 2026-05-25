@@ -1,11 +1,27 @@
-import { AccessoryConfig, AccessoryPlugin, Service } from 'homebridge';
+import { Service } from 'homebridge';
+import type { AccessoryPlugin } from 'homebridge';
 
 import { TibberQuery } from 'tibber-api';
-import { PriceLevel } from 'tibber-api/lib/src/models/enums/PriceLevel';
+import { PriceLevel } from 'tibber-api/lib/src/models/enums/PriceLevel.js';
 
-import { PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_DISPLAY_NAME } from './settings';
+import type { TibberDeviceConfig } from './config.js';
+import { PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_DISPLAY_NAME } from './settings.js';
 
-import { TibberPlatform } from './platform';
+import type { TibberPlatform } from './platform.js';
+
+const PRICE_UPDATE_INTERVAL_MS = 60 * 1000;
+
+function formatError(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  return String(error);
+}
 
 export class TibberAccessory implements AccessoryPlugin {
   private readonly uuid_base: string;
@@ -20,9 +36,11 @@ export class TibberAccessory implements AccessoryPlugin {
 
   private readonly informationService: Service;
 
+  private readonly updateInterval: NodeJS.Timeout;
+
   constructor(
     private readonly platform: TibberPlatform,
-    private readonly config: AccessoryConfig,
+    private readonly config: TibberDeviceConfig,
   ) {
     this.name = config.name;
     this.homeID = config.id;
@@ -42,10 +60,11 @@ export class TibberAccessory implements AccessoryPlugin {
 
     this.contactSensorService = new platform.Service.ContactSensor(this.name);
 
-    // update price every minute
-    setInterval(async () => {
-      await this.updateCurrentEnergyPrice();
-    }, 60 * 1000);
+    void this.updateCurrentEnergyPrice();
+
+    this.updateInterval = setInterval(() => {
+      void this.updateCurrentEnergyPrice();
+    }, PRICE_UPDATE_INTERVAL_MS);
   }
 
   getServices(): Service[] {
@@ -55,15 +74,19 @@ export class TibberAccessory implements AccessoryPlugin {
     ];
   }
 
-  async updateCurrentEnergyPrice() {
+  shutdown(): void {
+    clearInterval(this.updateInterval);
+  }
+
+  async updateCurrentEnergyPrice(): Promise<void> {
     let level: PriceLevel;
     try {
       const result = await this.tibberQuery.getCurrentEnergyPrice(this.homeID);
-      level = result.level;
-      this.platform.log.info(`Energy Level: ${result.level}`);
+      level = result.level ?? PriceLevel.NORMAL;
+      this.platform.log.info(`Energy Level: ${level}`);
     } catch (error) {
       level = PriceLevel.NORMAL;
-      this.platform.log.error(`Error: ${JSON.stringify(error)}`);
+      this.platform.log.error(`Tibber energy price update failed for "${this.name}": ${formatError(error)}`);
       this.platform.log.warn('Resetting Energy Level Price to Normal');
     }
 

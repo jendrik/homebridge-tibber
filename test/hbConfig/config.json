@@ -1,0 +1,15 @@
+{
+  "bridge": {
+    "name": "Homebridge Tibber Test",
+    "username": "0E:BC:2A:00:00:01",
+    "port": 51826,
+    "pin": "031-45-154"
+  },
+  "accessories": [],
+  "platforms": [
+    {
+      "platform": "tibber",
+      "name": "Tibber"
+    }
+  ]
+}
